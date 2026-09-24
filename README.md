@@ -28,23 +28,24 @@ the handout under "How you turn this in."
 ### (b) Check it before you trust it
 #### i. Do I have the gauges I expect?
 **What you expected:**
-_what you thought the answer would be, before you ran anything_
+#Looking between the roster and gauge dataset, before running anything I would expect RG06 and RG07 to not send anything as neither of them are listed for the gauge_ids
 **What you ran, and what it gave back:**
 ```
-your code and its output
+#input: actual={r['gauge'] for r in readings}
+#output for actual:{'RG05', 'RG01', 'RG03', 'RG04', 'RG02'}
 ```
 **Optional. What you tried first, if it did not work:**
 ```
-leave this blank if your first try worked
+#
 ```
 **Which gauges are on the roster and never sent anything:**
-_your answer_
+#RG06 & RG07
 **Which of the two a `False` actually supports, and what you would need in order to
 tell them apa/rt:**
-_a sentence or two_
+#False reports that an item that you are requesting does not exist and does not explain on whether a gauge has no rain as in False reports that _no reading arrived_. In order to distinguish the difference the dataset would need to include an explicit number for a no rain reading such as 0.0 and a number representing no readings such as -999.0.
 #### ii. Do I have every hour from every gauge?
 **What you expected:**
-_what you thought the answer would be, before you ran anything_
+#RG03 & RG04
 **What you ran, and what it gave back:**
 ```
 your code and its output
