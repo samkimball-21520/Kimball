@@ -17,22 +17,27 @@ the handout under "How you turn this in."
 ### (a) Shape
 **The one line that builds `loc_of`:**
 ```python
-#loc_of=dict(zip(gauge_ids,gauge_locs))
+loc_of=dict(zip(gauge_ids,gauge_locs))
 ```
 **The gauge you looked up, and what Python gave back:**
 ```
-#loc_of['RG03'] & (34.81, -86.59)
+loc_of['RG03']
+(34.81, -86.59)
 ```
 **That same gauge's coordinates, read out of `lab_gauges.py` with your eyes:**
 #gauge_ids is RG03 with the coordinates in latitude and longitude 34.81, -86.59, respectively
 ### (b) Check it before you trust it
 #### i. Do I have the gauges I expect?
 **What you expected:**
-#Looking between the roster and gauge dataset, before running anything I would expect RG06 and RG07 to not send anything as neither of them are listed for the gauge_ids
+```
+Looking between the roster and gauge dataset, before running anything I would expect RG06 and RG07 to not send anything as neither of them are listed for the gauge_ids
+```
 **What you ran, and what it gave back:**
 ```
-#input: actual={r['gauge'] for r in readings}
-#output for actual:{'RG05', 'RG01', 'RG03', 'RG04', 'RG02'}
+input:
+actual={r['gauge'] for r in readings}
+output:
+{'RG05', 'RG01', 'RG03', 'RG04', 'RG02'}
 ```
 **Optional. What you tried first, if it did not work:**
 ```
@@ -42,64 +47,102 @@ the handout under "How you turn this in."
 #RG06 & RG07
 **Which of the two a `False` actually supports, and what you would need in order to
 tell them apa/rt:**
-#False reports that an item that you are requesting does not exist and does not explain on whether a gauge has no rain as in False reports that _no reading arrived_. In order to distinguish the difference the dataset would need to include an explicit number for a no rain reading such as 0.0 and a number representing no readings such as -999.0.
+```
+False reports that an item that you are requesting does not exist and does not explain on whether a gauge has no rain as in False reports that _no reading arrived_. In order to distinguish the difference the dataset would need to include an explicit number for a no rain reading such as 0.0 and a number representing no readings such as -999.0.
+```
 #### ii. Do I have every hour from every gauge?
 **What you expected:**
+```
 #RG03 & RG04
+```
 **What you ran, and what it gave back:**
 ```
-your code and its output
+input:
+for gauge in roster:
+    hours = {
+        r["hour"]
+        for r in readings
+        if r["gauge"] == gauge
+    }
+
+    if 0 < len(hours) < 5:
+        print(gauge, sorted(hours))
+
+output:
+RG03 [0, 1, 2, 3]
+RG04 [0, 1, 2, 4]
 ```
 **Optional. What you tried first, if it did not work:**
 ```
-leave this blank if your first try worked
+
 ```
 **Which two gauges are short — the ones with fewer than five records:**
-_your answer_
+```
+RG03 & RG04
+```
 #### iii. Are the values physical?
 **What you expected:**
-_what you thought the answer would be, before you ran anything_
+```
+RG05: 5 readings of -999.00
+```
 **What you ran, and what it gave back:**
 ```
-your code and its output
+input:
+negative_gauges={r["gauge"] for r in readings if r["rain_mm"] <0}
+output:
+{'RG05'}
+
 ```
 **Optional. What you tried first, if it did not work:**
 ```
-leave this blank if your first try worked
+
 ```
 **How many readings are not physical rainfall:**
-_the count — you need this again in (c)_
+```
+There are 5 readings with -999.00
+```
 **Which gauge they are from:**
-_your answer_
+```
+Gauge RG05
+```
 ### (c) Drop the values that are not rainfall
 **How long a cleaned list has to be, worked out before you ran anything:**
-_your number, and how you got it_
+```
+The clean list needs to include 18 values. I made sure to count each rain_mm in gauges 1 - 4 (RG01 - RG04). RG01 & RG02 each have 5 readings while RG03 & RG04 each have 4 readings. 5 + 5 + 4 + 4 = 18 readings total.
+```
 **`len(clean)` after the in-place loop:**
 ```
-the length the loop left you with
+20
 ```
 **Whether any fill values are still sitting in `clean`:**
 ```
-what you found still in there
+There are values of -999.00 still sitting in RG05
 ```
 **What the loop did instead, in your own words:**
-_your explanation_
+```
+The clean variable is looking through each of the listings from each gauge and is checking if the reading is below 0. The variable then is proceeded through a "for loop" as clean moves to the next position after it is done looking at the first one. After the for loop comes the remove function, which leads to len(clean) outputting 20. This is because after removing the first -999.00, as it is below 0, the for loop looks for the next value in the set. But now the list has shifted left due to the initially removed value while the for loop is now looking at the new second value. 
+```
 **With the `print` added: which RG05 records the loop never looked at, and where
 they were sitting when the loop went past:**
-_your answer_
+```
+hour 1
+hour 3
+```
 **The one line that builds a new list rather than reaching into the old one:**
-```python
-# your line here
+```
+clean_Prob_1 = [rec for rec in readings if rec['rain_mm'] >=0]
 ```
 **Its length, against the number you wrote down:**
 ```
-the length, and whether it matches
+len(clean_prob_1) outputs 18 which corresponds with the number I wrote down previously
 ```
 **What you called this cleaned list:**
-_the name you gave it — problem 4 calls it `records`_
+```
+clean_Prob_1
+```
 **`len(readings)` when you are done, confirming it is still 23:**
 ```
-the length
+len(readings) outputs 23 while len(clean_Prob_1) outputs 18. All is well! 
 ```
 ---
 ## Problem 2 — Which gauge caught the most?
